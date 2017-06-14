@@ -1,0 +1,88 @@
+1. Установка MongoDB  (https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-16-04)
+
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
+echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
+sudo apt-get update
+sudo apt-get install -y mongodb-org
+
+Добавляем файл для управления сервисами 
+
+sudo nano /etc/systemd/system/mongodb.service
+
+В созданный файл добавляем следующий контент
+
+[Unit]
+Description=High-performance, schema-free document-oriented database
+After=network.target
+
+[Service]
+User=mongodb
+ExecStart=/usr/bin/mongod --quiet --config /etc/mongod.conf
+
+[Install]
+WantedBy=multi-user.target
+
+Создаём сервис с systemctl
+
+sudo systemctl start mongodb
+sudo systemctl status mongodb
+sudo systemctl enable mongodb
+
+
+2. Установка Python 2.7.11 (https://askubuntu.com/questions/101591/how-do-i-install-the-latest-python-2-7-x-or-3-x-on-ubuntu)
+
+sudo apt-get install build-essential checkinstall
+sudo apt-get install libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev
+
+version=2.7.11
+cd ~/Downloads/
+wget https://www.python.org/ftp/python/$version/Python-$version.tgz
+tar -xvf Python-$version.tgz
+cd Python-$version
+
+./configure
+make
+sudo checkinstall
+
+3. Установка М2crypto (https://www.howtoinstall.co/en/ubuntu/xenial/python-m2crypto)
+
+sudo apt-get update
+sudo apt-get install python-m2crypto
+
+4. Установка PIP (https://www.rosehosting.com/blog/how-to-install-pip-on-ubuntu-16-04/)
+
+sudo apt-get update && sudo apt-get -y upgrade
+sudo apt-get install python-pip
+pip install --upgrade pip
+
+5. Установка CRIRS (https://github.com/crits/crits)
+
+sudo su 
+echo 1 > /proc/sys/net/ipv4/tcp_tw_reuse
+echo 1 > /proc/sys/net/ipv4/tcp_tw_recycle
+exit
+
+sudo mkdir -p /data/db
+sudo mkdir -p /data/logs
+
+sudo apt-get install -y --fix-missing apache2 libapache2-mod-wsgi
+
+sudo adduser crits
+sudo mkdir -p /data
+cd /data
+
+sudo git clone https://github.com/crits/crits.git
+cd crits/
+
+sudo -H pip install -U -r requirements.txt
+
+sudo cp /data/crits/script/bootstrap /data/crits
+sudo cp /data/crits/script/server /data/crits
+
+sudo -H ./bootstrap - в процессе вводите данные, которые будут запрашиваться
+
+Запуск отделно сервера CRITS 
+
+sudo -H ./server
+
+
