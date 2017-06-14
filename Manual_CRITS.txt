@@ -1,4 +1,4 @@
-1. Установка MongoDB  (https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-16-04)
+1. Installing MongoDB  (https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-16-04)
 
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
 echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
@@ -22,14 +22,14 @@ ExecStart=/usr/bin/mongod --quiet --config /etc/mongod.conf
 [Install]
 WantedBy=multi-user.target
 
-Создаём сервис с systemctl
+Create service with systemctl
 
 sudo systemctl start mongodb
 sudo systemctl status mongodb
 sudo systemctl enable mongodb
 
 
-2. Установка Python 2.7.11 (https://askubuntu.com/questions/101591/how-do-i-install-the-latest-python-2-7-x-or-3-x-on-ubuntu)
+2. Installing Python 2.7.11 (https://askubuntu.com/questions/101591/how-do-i-install-the-latest-python-2-7-x-or-3-x-on-ubuntu)
 
 sudo apt-get install build-essential checkinstall
 sudo apt-get install libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev
@@ -44,18 +44,18 @@ cd Python-$version
 make
 sudo checkinstall
 
-3. Установка М2crypto (https://www.howtoinstall.co/en/ubuntu/xenial/python-m2crypto)
+3. Installing М2crypto (https://www.howtoinstall.co/en/ubuntu/xenial/python-m2crypto)
 
 sudo apt-get update
 sudo apt-get install python-m2crypto
 
-4. Установка PIP (https://www.rosehosting.com/blog/how-to-install-pip-on-ubuntu-16-04/)
+4. Installing PIP (https://www.rosehosting.com/blog/how-to-install-pip-on-ubuntu-16-04/)
 
 sudo apt-get update && sudo apt-get -y upgrade
 sudo apt-get install python-pip
 pip install --upgrade pip
 
-5. Установка CRIRS (https://github.com/crits/crits)
+5. Installing CRIRS (https://github.com/crits/crits)
 
 sudo su 
 echo 1 > /proc/sys/net/ipv4/tcp_tw_reuse
@@ -73,6 +73,21 @@ cd /data
 
 sudo git clone https://github.com/crits/crits.git
 cd crits/
+
+chgrp -R crits logs
+touch logs/crits.log
+chmod 664 logs/crits.log
+
+In the crits/config directory that came with the CRITs codebase, copy database_example.py to database.py:
+
+cp database_example.py database.py
+
+Edit database.py and use the comments to configure the following:
+
+1)Your MongoDB connection information.
+2)Your SECRET_KEY.
+3)You can run python contrib/gen_secret_key.py to generate a SECRET_KEY for your install. S3 information if you are using Amazon S3.
+
 
 sudo -H pip install -U -r requirements.txt
 
