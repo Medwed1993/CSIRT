@@ -5,12 +5,12 @@ echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" 
 sudo apt-get update
 sudo apt-get install -y mongodb-org
 
-Добавляем файл для управления сервисами 
+Adding fails for manage of services
 
 sudo nano /etc/systemd/system/mongodb.service
 
-В созданный файл добавляем следующий контент
-
+Add into /etc/systemd/system/mongodb.service the next listing
+----------------------------------------------------------------------------
 [Unit]
 Description=High-performance, schema-free document-oriented database
 After=network.target
@@ -21,6 +21,7 @@ ExecStart=/usr/bin/mongod --quiet --config /etc/mongod.conf
 
 [Install]
 WantedBy=multi-user.target
+------------------------------------------------------------------------------
 
 Create service with systemctl
 
@@ -55,49 +56,20 @@ sudo apt-get update && sudo apt-get -y upgrade
 sudo apt-get install python-pip
 pip install --upgrade pip
 
-5. Installing CRIRS (https://github.com/crits/crits)
+5. Installing CRITS (https://github.com/crits/crits)
 
 sudo su 
-echo 1 > /proc/sys/net/ipv4/tcp_tw_reuse
-echo 1 > /proc/sys/net/ipv4/tcp_tw_recycle
-exit
 
-sudo mkdir -p /data/db
-sudo mkdir -p /data/logs
-
-sudo apt-get install -y --fix-missing apache2 libapache2-mod-wsgi
-
-sudo adduser crits
-sudo mkdir -p /data
-cd /data
-
-sudo git clone https://github.com/crits/crits.git
+git clone https://github.com/crits/crits.git
 cd crits/
+pip install -U -r requirements.txt
 
-chgrp -R crits logs
-touch logs/crits.log
-chmod 664 logs/crits.log
+cp /data/crits/script/bootstrap /data/crits
+cp /data/crits/script/server /data/crits
+./bootstrap
 
-In the crits/config directory that came with the CRITs codebase, copy database_example.py to database.py:
+Run CRITS server 
 
-cp database_example.py database.py
-
-Edit database.py and use the comments to configure the following:
-
-1)Your MongoDB connection information.
-2)Your SECRET_KEY.
-3)You can run python contrib/gen_secret_key.py to generate a SECRET_KEY for your install. S3 information if you are using Amazon S3.
-
-
-sudo -H pip install -U -r requirements.txt
-
-sudo cp /data/crits/script/bootstrap /data/crits
-sudo cp /data/crits/script/server /data/crits
-
-sudo -H ./bootstrap - в процессе вводите данные, которые будут запрашиваться
-
-Запуск отделно сервера CRITS 
-
-sudo -H ./server
+./server
 
 
